@@ -38,7 +38,7 @@ jobs:
       - name: Build ISO
         run: |
           chmod +x iso-builder/build_iso.sh
-          ./iso-builder/build_iso.sh "${{ matrix.distro }}" dist
+          sudo ./iso-builder/build_iso.sh "${{ matrix.distro }}" dist
 
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4

@@ -15,9 +15,22 @@ case "${DISTRO}" in
     ;;
   fedora)
     echo "Building Fedora based AetherOS ISO..."
+    ROOTFS_DIR="$(mktemp -d)"
+    trap 'rm -rf "${ROOTFS_DIR}"' EXIT
     ROOTFS_TAR="${OUTPUT_DIR}/aetheros-fedora-rootfs.tar.gz"
-    dnf -y --installroot="$(mktemp -d)" --releasever=rawhide groupinstall "Fedora Workstation"
-    tar -czf "${ROOTFS_TAR}" /etc
+    dnf -y \
+      --installroot="${ROOTFS_DIR}" \
+      --releasever=42 \
+      --setopt=install_weak_deps=False \
+      --setopt=tsflags=nodocs \
+      --setopt=fedora.enabled=1 \
+      --setopt=updates.enabled=1 \
+      --setopt=fedora.gpgcheck=0 \
+      --setopt=updates.gpgcheck=0 \
+      --repofrompath=fedora,https://download.fedoraproject.org/pub/fedora/linux/releases/42/Everything/x86_64/os/ \
+      --repofrompath=updates,https://download.fedoraproject.org/pub/fedora/linux/updates/42/Everything/x86_64/ \
+      install fedora-release bash coreutils filesystem
+    tar -C "${ROOTFS_DIR}" -czf "${ROOTFS_TAR}" .
     ;;
   *)
     echo "Unsupported distro: ${DISTRO}" >&2

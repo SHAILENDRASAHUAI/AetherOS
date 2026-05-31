@@ -1,0 +1,11 @@
+module aether_ai 1.0;
+
+require {
+  type init_t;
+  class unix_stream_socket create_socket_perms;
+  class sock_file create_file_perms;
+}
+
+type aether_ai_t;
+type aether_ai_exec_t;
+init_daemon_domain(aether_ai_t, aether_ai_exec_t)

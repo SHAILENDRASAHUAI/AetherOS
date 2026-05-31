@@ -1,0 +1,31 @@
+import unittest
+
+from ai_core_import import load_ai_module
+
+
+class TestAetherAI(unittest.TestCase):
+    def setUp(self) -> None:
+        self.mod = load_ai_module()
+
+    def test_install_maps_to_package_manager(self) -> None:
+        ai = self.mod.AetherAI()
+        ai.package_manager = "apt"
+        proposal = ai.propose_action("install vscode")
+        self.assertIn("sudo apt install -y vscode", proposal.proposed_action)
+        self.assertTrue(proposal.requires_confirmation)
+
+    def test_remove_has_high_risk(self) -> None:
+        ai = self.mod.AetherAI()
+        proposal = ai.propose_action("remove docker")
+        self.assertEqual("high", proposal.risk_level)
+        self.assertTrue(proposal.requires_confirmation)
+
+    def test_unknown_action_is_not_auto_execute(self) -> None:
+        ai = self.mod.AetherAI()
+        ai.api_key = None
+        proposal = ai.propose_action("do something unexpected")
+        self.assertIn("No direct command generated", proposal.proposed_action)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -101,6 +101,11 @@ class AetherAI:
     def _local_action_from_text(self, text: str) -> ActionProposal:
         lowered = text.lower().strip()
 
+        flatpak_match = re.fullmatch(r"install flatpak\s+(.+)", lowered)
+        if flatpak_match:
+            app = flatpak_match.group(1).strip()
+            return ActionProposal(text, f"flatpak install -y flathub {app}", "medium")
+
         install_match = re.fullmatch(r"install\s+(.+)", lowered)
         if install_match:
             package = install_match.group(1)
@@ -110,11 +115,6 @@ class AetherAI:
         if remove_match:
             package = remove_match.group(1)
             return ActionProposal(text, self._package_remove_command(package), "high")
-
-        flatpak_match = re.fullmatch(r"install flatpak\s+(.+)", lowered)
-        if flatpak_match:
-            app = flatpak_match.group(1).strip()
-            return ActionProposal(text, f"flatpak install -y flathub {app}", "medium")
 
         if lowered in {"update system", "upgrade system", "update"}:
             cmd = (

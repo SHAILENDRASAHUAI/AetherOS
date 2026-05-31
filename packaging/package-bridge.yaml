@@ -1,0 +1,12 @@
+intent_map:
+  install:
+    apt: "sudo apt install -y {package}"
+    dnf: "sudo dnf install -y {package}"
+    flatpak: "flatpak install -y flathub {package}"
+  remove:
+    apt: "sudo apt remove -y {package}"
+    dnf: "sudo dnf remove -y {package}"
+    flatpak: "flatpak uninstall -y {package}"
+  update_system:
+    apt: "sudo apt update && sudo apt upgrade -y"
+    dnf: "sudo dnf upgrade --refresh -y"

@@ -1,43 +1,66 @@
 # AetherOS
 
-AetherOS is an AI-native operating system blueprint for Debian 13/Fedora on x86_64,
-with AI as the primary interaction layer.
+AetherOS is an AI-native operating system engineering repository targeting Debian 13 and Fedora 42 with x86_64 and arm64 support.
+
+## Release Targets
+
+- **Desktop**: AI-first workstation image
+- **Recovery**: snapshot and boot repair image
+- **Developer**: SDK + container/virtualization enabled image
+
+Defined in: `release/targets.yaml`
 
 ## Repository Layout
 
 ```text
 AetherOS/
-│
-├── ai-core/
+├── kernel/
+├── bootloader/
+├── initramfs/
+├── security/
+├── networking/
 ├── desktop/
+├── ai-core/
+├── ai-memory/
+├── ai-terminal/
+├── ai-filemanager/
+├── ai-assistant/
+├── browser/
+├── appstore/
 ├── installer/
-├── iso-builder/
-├── system-services/
-├── branding/
+├── updater/
+├── recovery/
+├── drivers/
+├── sdk/
 ├── docs/
-│
-├── .github/
-│   └── workflows/
-│       └── build-iso.yml
-│
-└── README.md
+├── tests/
+├── branding/
+├── scripts/
+├── iso-builder/
+└── .github/workflows/
 ```
 
-## Core Components
+## Build Matrix
 
-- `installer/first_boot_setup.py`: first-boot flow with Gemini key capture + secure storage.
-- `ai-core/aether_ai.py`: AI daemon logic, Gemini integration, local fallback, safe action proposal.
-- `system-services/aether-ai.service`: systemd unit for the AI core daemon.
-- `iso-builder/build_iso.sh`: Debian/Fedora ISO build entrypoint.
-- `.github/workflows/build-iso.yml`: CI workflow for matrix ISO builds + artifact publishing.
+Use:
+
+```bash
+./scripts/build.sh
+```
+
+Builds Debian/Fedora, x86_64/arm64, and Desktop/Recovery/Developer placeholders, then emits:
+
+- `AetherOS-Desktop.iso`
+- `AetherOS-Recovery.iso`
+- `AetherOS-Developer.iso`
+- `manifest.json` and SHA256 files in `dist/`
 
 ## Security Guarantees
 
-- No API key is bundled in source.
-- Gemini API key is user-provided at first boot.
-- Key storage uses Linux keyring, KDE Wallet, or encrypted storage fallback.
-- AI-generated actions are only proposed, never auto-executed.
-- Each proposed action includes a risk classification and requires user confirmation.
+- Gemini API key is user provided at first boot.
+- Key storage uses secret-tool, KDE Wallet, or encrypted fallback.
+- AI actions are proposals requiring user confirmation.
+- AI-generated unsafe commands are rejected by safety policy.
 
 ## Quick Validation
 

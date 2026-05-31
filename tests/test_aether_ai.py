@@ -26,6 +26,19 @@ class TestAetherAI(unittest.TestCase):
         proposal = ai.propose_action("do something unexpected")
         self.assertIn("No direct command generated", proposal.proposed_action)
 
+    def test_flatpak_install_request_maps_to_flatpak(self) -> None:
+        ai = self.mod.AetherAI()
+        proposal = ai.propose_action("install flatpak org.mozilla.firefox")
+        self.assertEqual("flatpak install -y flathub org.mozilla.firefox", proposal.proposed_action)
+        self.assertEqual("medium", proposal.risk_level)
+
+    def test_unsafe_ai_generated_command_is_rejected(self) -> None:
+        ai = self.mod.AetherAI(api_key="dummy")
+        ai.gemini.generate = lambda _: "rm -rf /"
+        proposal = ai.propose_action("clean everything")
+        self.assertEqual("high", proposal.risk_level)
+        self.assertIn("rejected by safety policy", proposal.proposed_action)
+
 
 if __name__ == "__main__":
     unittest.main()

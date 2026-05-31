@@ -1,0 +1,11 @@
+openapi: 3.0.3
+info:
+  title: AetherOS SDK API
+  version: 0.1.0
+paths:
+  /ai/proposal:
+    post:
+      summary: Create an AI action proposal
+      responses:
+        '200':
+          description: Proposal generated

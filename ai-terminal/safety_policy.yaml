@@ -1,0 +1,9 @@
+approval_required: true
+deny_patterns:
+  - "rm -rf /"
+  - "mkfs"
+  - "dd if="
+allowed_package_managers:
+  - apt
+  - dnf
+  - flatpak

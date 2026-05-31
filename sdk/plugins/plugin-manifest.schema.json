@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AetherOS Plugin Manifest",
+  "type": "object",
+  "required": ["name", "version", "entrypoint"],
+  "properties": {
+    "name": {"type": "string"},
+    "version": {"type": "string"},
+    "entrypoint": {"type": "string"},
+    "permissions": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

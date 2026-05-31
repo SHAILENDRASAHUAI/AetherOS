@@ -1,0 +1,11 @@
+[Unit]
+Description=AetherOS Local Telemetry Collector
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/aetheros/system/telemetry_collector.py --local-only
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

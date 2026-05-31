@@ -21,7 +21,16 @@ case "${DISTRO}" in
     if [[ "${ARCH}" == "x86_64" ]]; then
       debootstrap --arch=amd64 trixie "${ROOTFS_DIR}" http://deb.debian.org/debian/
     else
-      debootstrap --arch=arm64 trixie "${ROOTFS_DIR}" http://deb.debian.org/debian/
+      if [[ "$(uname -m)" == "aarch64" ]]; then
+        debootstrap --arch=arm64 trixie "${ROOTFS_DIR}" http://deb.debian.org/debian/
+      else
+        debootstrap --foreign --arch=arm64 trixie "${ROOTFS_DIR}" http://deb.debian.org/debian/
+        if [[ -x "/usr/bin/qemu-aarch64-static" ]]; then
+          cp /usr/bin/qemu-aarch64-static "${ROOTFS_DIR}/usr/bin/"
+          chroot "${ROOTFS_DIR}" /debootstrap/debootstrap --second-stage
+          rm -f "${ROOTFS_DIR}/usr/bin/qemu-aarch64-static"
+        fi
+      fi
     fi
     tar -C "${ROOTFS_DIR}" -czf "${OUTPUT_DIR}/aetheros-${DISTRO}-${ARCH}-${EDITION,,}-rootfs.tar.gz" .
     ;;
@@ -36,9 +45,13 @@ case "${DISTRO}" in
     fi
     dnf -y \
       --installroot="${ROOTFS_DIR}" \
+      --forcearch="${FEDORA_ARCH}" \
       --releasever=42 \
       --setopt=install_weak_deps=False \
       --setopt=tsflags=nodocs \
+      --setopt=ignorearch=True \
+      --setopt=arch="${FEDORA_ARCH}" \
+      --setopt=basearch="${FEDORA_ARCH}" \
       --setopt=fedora.enabled=1 \
       --setopt=updates.enabled=1 \
       --setopt=fedora.gpgcheck=0 \

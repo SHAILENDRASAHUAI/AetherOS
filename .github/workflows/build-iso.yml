@@ -1,0 +1,53 @@
+name: Build AetherOS ISO
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [debian, fedora]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debootstrap dnf xorriso squashfs-tools grub-pc-bin grub-efi-amd64-bin
+
+      - name: Cache package manager data
+        uses: actions/cache@v4
+        with:
+          path: |
+            /var/cache/apt
+            /var/cache/dnf
+          key: ${{ runner.os }}-${{ matrix.distro }}-${{ hashFiles('iso-builder/build_iso.sh') }}
+
+      - name: Build ISO
+        run: |
+          chmod +x iso-builder/build_iso.sh
+          ./iso-builder/build_iso.sh "${{ matrix.distro }}" dist
+
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aetheros-${{ matrix.distro }}-iso
+          path: dist/*
+
+      - name: Attach ISOs to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*

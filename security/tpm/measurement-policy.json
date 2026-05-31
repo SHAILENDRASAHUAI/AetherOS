@@ -1,0 +1,6 @@
+{
+  "pcrs": [0, 2, 4, 7],
+  "boot_measurement": true,
+  "disk_unlock_with_tpm": true,
+  "fallback_recovery_key": true
+}

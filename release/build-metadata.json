@@ -1,0 +1,8 @@
+{
+  "artifact_prefix": "AetherOS",
+  "output_directory": "dist",
+  "supported_distros": ["debian", "fedora"],
+  "supported_architectures": ["x86_64", "arm64"],
+  "supported_editions": ["Desktop", "Recovery", "Developer"],
+  "reproducible": true
+}

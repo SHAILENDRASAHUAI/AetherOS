@@ -1,0 +1,37 @@
+name: Release AetherOS
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debootstrap dnf
+
+      - name: Build release artifacts
+        run: |
+          chmod +x scripts/build.sh
+          sudo ./scripts/build.sh dist
+
+      - name: Upload build artifact bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: aetheros-release-bundle
+          path: dist/*
+
+      - name: Publish release assets
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*

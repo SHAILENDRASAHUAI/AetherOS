@@ -1,0 +1,27 @@
+product: AetherOS
+versioning:
+  scheme: semver
+  current: 0.2.0
+  channel: nightly
+editions:
+  - name: Desktop
+    purpose: AI-native daily workstation
+    image: AetherOS-Desktop.iso
+  - name: Recovery
+    purpose: Offline repair and rollback tools
+    image: AetherOS-Recovery.iso
+  - name: Developer
+    purpose: SDK, containers, and virtualization tooling
+    image: AetherOS-Developer.iso
+platforms:
+  architectures: [x86_64, arm64]
+  environments: [desktop_pc, laptop, server, virtual_machine, cloud_instance]
+security_baseline:
+  secure_boot: required
+  selinux: enforcing
+  apparmor: enabled
+  full_disk_encryption: supported
+  tpm: supported
+  signing:
+    artifacts: required
+    updates: required

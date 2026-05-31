@@ -1,49 +1,49 @@
 # AetherOS Architecture
 
-## Base System
+## Platform Baseline
 
-- Target distros: Debian 13 (trixie) and Fedora
-- Architecture: x86_64
-- Desktop: KDE Plasma customization with Wayland, UEFI, Secure Boot intent
-- Delivery: Live ISO builds via `iso-builder/` and GitHub Actions
+- Distros: Debian 13 (trixie), Fedora 42
+- Architectures: x86_64, arm64
+- Editions: Desktop, Recovery, Developer
+- Boot target: UEFI + GRUB2 + Linux LTS + initramfs + systemd
 
-## AI Core (`aether-ai.service`)
+## Boot Path
 
-`aether-ai.service` launches `ai-core/aether_daemon.py` and exposes a local UNIX
-socket for desktop components.
+UEFI -> GRUB -> Kernel -> Initramfs -> systemd -> Desktop -> AI Core
 
-Core responsibilities implemented in `ai-core/aether_ai.py`:
+Artifacts:
+- `bootloader/grub/grub.cfg.template`
+- `initramfs/hooks/aether-secureboot.sh`
+- `kernel/configs/*.config`
 
-- Gemini API communication with user-provided API key
-- Local fallback mode for offline functionality
-- Intent-to-command conversion for package operations
-- Desktop automation proposal generation
-- System awareness data collection
+## AI Core
 
-## Safety Model
+`aether-ai.service` starts `ai-core/aether_daemon.py`, which delegates intent routing to `ai-core/aether_ai.py`.
 
-- AI actions are always returned as **proposals**
-- Every proposal includes `risk_level`
-- `requires_confirmation` is always true
-- No auto execution path exists in AI core
+Capabilities:
+- intent-to-command mapping for package operations
+- Gemini-backed fallback command generation
+- command safety filtering for destructive patterns
+- offline local recommendation mode
 
-## First Boot Sequence
+## Security Model
 
-Implemented by `installer/first_boot_setup.py`:
+- Secure boot intent + TPM measurement policy (`security/tpm/measurement-policy.json`)
+- SELinux + AppArmor scaffolding (`system-services/selinux`, `system-services/apparmor`)
+- firewall baseline (`security/firewall/nftables.conf`)
+- encryption baseline (`security/encryption/luks-layout.md`)
 
-1. Welcome
-2. Internet check
-3. Gemini API key collection
-4. API validation
-5. AI feature enablement + secure key storage
-6. User account creation handoff
+## Service Topology
 
-## Secure Key Storage
+- `aether-ai.service`: AI routing daemon
+- `aether-update.service`: update orchestration
+- `aether-recovery.service`: recovery actions
+- `aether-health.service`: health monitoring
+- `aether-telemetry.service`: local telemetry collector
 
-Storage priority:
+## Build and Release
 
-1. Linux Keyring (`secret-tool`)
-2. KDE Wallet (`kwallet-query`)
-3. Encrypted local fallback (`openssl` AES-256)
-
-No plaintext API key file is written.
+- `iso-builder/build_iso.sh`: distro/arch/edition image entrypoint
+- `scripts/build.sh`: matrix build orchestrator
+- `scripts/generate_manifest.py`: checksums + manifest metadata
+- `release/targets.yaml`: product baseline and release target declaration

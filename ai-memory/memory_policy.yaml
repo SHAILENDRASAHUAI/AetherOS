@@ -1,0 +1,10 @@
+modes:
+  - local_only
+  - cloud_sync
+  - disabled
+default_mode: local_only
+retention_days: 30
+sensitive_fields:
+  - api_keys
+  - authentication_tokens
+  - biometric_data

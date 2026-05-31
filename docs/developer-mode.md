@@ -1,11 +1,19 @@
 # Developer Mode
 
-Developer mode is extension-oriented and intended to support:
+## SDK Surface
 
-- Plugin system for custom workflows
-- Custom AI agents
-- Local model backends
-- Gemini/OpenAI/Ollama provider adapters
+- API contract seed: `sdk/api/openapi.yaml`
+- Plugin manifest schema: `sdk/plugins/plugin-manifest.schema.json`
+- Extension track: `sdk/extensions/`
 
-The AI core is structured so provider integrations can be injected in place of
-`GeminiClient` while keeping the same `ActionProposal` safety contract.
+## Local Validation
+
+```bash
+python3 -m unittest discover -s tests -p "test_*.py"
+```
+
+## Build Pipeline
+
+```bash
+./scripts/build.sh
+```

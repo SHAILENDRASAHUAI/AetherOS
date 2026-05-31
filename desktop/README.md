@@ -1,8 +1,16 @@
 # AetherOS Desktop Layer
 
-This directory tracks KDE Plasma customization points for:
+Wayland-first desktop shell track with XWayland compatibility.
 
+Planned core modules:
+- dock and launcher
+- start menu and notifications
+- widget host
+- virtual desktops
+- multi-monitor and touch input support
+
+AI integration points:
 - AI sidebar (`Super+Space`)
-- Floating AI chat panel
-- Global AI search
-- Voice interaction entrypoint ("Hey Aether")
+- floating AI panel
+- global semantic search
+- voice entrypoint (`Hey Aether`)

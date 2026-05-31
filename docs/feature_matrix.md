@@ -1,36 +1,30 @@
 # AetherOS Feature Matrix
 
-## AI-Native UX
+## Product and Platform
 
-- AI Sidebar (Super+Space): planned desktop integration point (`desktop/README.md`)
-- Floating AI chat: planned desktop integration point (`desktop/README.md`)
-- Voice wake phrase "Hey Aether": planned desktop integration point (`desktop/README.md`)
-- Global AI search: planned desktop integration point (`desktop/README.md`)
+- Edition matrix (Desktop/Recovery/Developer): `release/targets.yaml`
+- Platform matrix (x86_64/arm64 + desktop/laptop/server/vm/cloud): `release/targets.yaml`
 
-## AI Core Capabilities
+## Boot / Kernel / Security
 
-- AI terminal intent-to-command translation: `ai-core/aether_ai.py`
-- AI desktop assistant Python project workflow: `ai-core/aether_ai.py`
-- AI settings automation proposal example (dark mode): `ai-core/aether_ai.py`
-- Offline local suggestion mode: `ai-core/aether_ai.py`
-- System awareness snapshot: `ai-core/aether_ai.py`
+- GRUB template: `bootloader/grub/grub.cfg.template`
+- Initramfs secure boot hook: `initramfs/hooks/aether-secureboot.sh`
+- Kernel profiles: `kernel/configs/desktop.config`, `server.config`, `cloud.config`
+- Firewall baseline: `security/firewall/nftables.conf`
+- TPM policy baseline: `security/tpm/measurement-policy.json`
+- Encryption baseline: `security/encryption/luks-layout.md`
 
-## First Boot & Gemini Key Handling
+## AI Platform
 
-- Welcome/internet/key/validation/enablement/account flow: `installer/first_boot_setup.py`
-- Linux Keyring storage path: `installer/first_boot_setup.py`
-- KDE Wallet storage path: `installer/first_boot_setup.py`
-- Encrypted fallback storage path: `installer/first_boot_setup.py`
+- AI proposal routing and safety policy: `ai-core/aether_ai.py`
+- AI daemon transport: `ai-core/aether_daemon.py`
+- First boot Gemini onboarding: `installer/first_boot_setup.py`
+- AI memory policy modes: `ai-memory/memory_policy.yaml`
+- AI terminal approval policy: `ai-terminal/safety_policy.yaml`
 
-## Security
+## Operations
 
-- Mandatory user confirmation and risk labels: `ai-core/aether_ai.py`
-- AppArmor profile: `system-services/apparmor/aether-ai.profile`
-- SELinux module stub: `system-services/selinux/aether_ai.te`
-- Polkit policy: `system-services/polkit/org.aetheros.ai.policy`
-
-## Service & Build
-
-- `aether-ai.service`: `system-services/aether-ai.service`
-- ISO build script: `iso-builder/build_iso.sh`
-- GitHub Actions ISO workflow: `.github/workflows/build-iso.yml`
+- Matrix build orchestrator: `scripts/build.sh`
+- Artifact checksums and manifest: `scripts/generate_manifest.py`
+- ISO build entrypoint: `iso-builder/build_iso.sh`
+- Update/recovery/health/telemetry services: `system-services/*.service`

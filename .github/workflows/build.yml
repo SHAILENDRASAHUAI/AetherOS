@@ -1,0 +1,42 @@
+name: Build AetherOS Matrix
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [debian, fedora]
+        arch: [x86_64, arm64]
+        edition: [Desktop, Recovery, Developer]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debootstrap dnf
+
+      - name: Build ISO placeholder
+        run: |
+          chmod +x iso-builder/build_iso.sh
+          sudo ./iso-builder/build_iso.sh "${{ matrix.distro }}" "${{ matrix.arch }}" "${{ matrix.edition }}" dist
+
+      - name: Generate checksums and manifest
+        run: |
+          python3 scripts/generate_manifest.py dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: aetheros-${{ matrix.distro }}-${{ matrix.arch }}-${{ matrix.edition }}
+          path: dist/*

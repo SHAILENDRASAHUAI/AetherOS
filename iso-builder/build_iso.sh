@@ -43,12 +43,17 @@ case "${DISTRO}" in
     else
       FEDORA_ARCH="aarch64"
     fi
+    FEDORA_TSFLAGS="nodocs"
+    if [[ "${FEDORA_ARCH}" == "aarch64" && "$(uname -m)" != "aarch64" ]]; then
+      FEDORA_TSFLAGS="nodocs,noscripts"
+      echo "Using tsflags=${FEDORA_TSFLAGS} for foreign-arch Fedora install on $(uname -m)"
+    fi
     dnf -y \
       --installroot="${ROOTFS_DIR}" \
       --forcearch="${FEDORA_ARCH}" \
       --releasever=42 \
       --setopt=install_weak_deps=False \
-      --setopt=tsflags=nodocs \
+      --setopt=tsflags="${FEDORA_TSFLAGS}" \
       --setopt=ignorearch=True \
       --setopt=arch="${FEDORA_ARCH}" \
       --setopt=basearch="${FEDORA_ARCH}" \

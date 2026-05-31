@@ -30,6 +30,7 @@ jobs:
         run: |
           chmod +x iso-builder/build_iso.sh
           sudo ./iso-builder/build_iso.sh "${{ matrix.distro }}" "${{ matrix.arch }}" "${{ matrix.edition }}" dist
+          sudo chown -R "${USER}:${USER}" dist
 
       - name: Generate checksums and manifest
         run: |
